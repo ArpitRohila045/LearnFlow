@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title%} LeanFlow {% endblock %}</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'manage/style.css' %}">
+
+    {% block style %}
+
+    {% endblock %}
+</head>
+<body>
+    <nav>
+        <ul class="side-bar">
+            <li onclick=hideSidebar()><a href="#"><span class="material-symbols-outlined">close</span></a></li>
+            <li><a href="#">LearnFlow</a></li>
+            <li><a href="#">Announcment's</a></li>
+            <li><a href="#">Discussion</a></li>
+            <li><a href="#">Profile</a></li>
+            {% if request.user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'signup' %}">Login</a></li>
+            {% endif %}
+        </ul>
+
+        <ul>
+            <li><a href="#">LearnFlow</a></li>
+            <li class="hideOnMobile"><a href="#">Announcment's</a></li>
+            <li class="hideOnMobile"><a href="#">Discussion</a></li>
+            <li class="hideOnMobile"><a href="#">Profile</a></li>
+            {% if request.user.is_authenticated %}
+                <li class="hideOnMobile"><a href="#">Logout</a></li>
+            {% else %}
+                <li class="hideOnMobile"><a href="{% url 'signup' %}">Sign up</a></li>
+            {% endif %}
+            <li class="menubar" onclick=showSidebar()><a href="#"><span class="material-symbols-outlined">menu</span></a></li>
+        </ul>
+    </nav>
+    {% block content %}
+
+    {% endblock %}
+</body>
+
+<script>
+    function showSidebar(){
+        const sidebar = document.querySelector('.side-bar')
+        sidebar.style.display = 'flex'
+    }
+    function hideSidebar(){
+        const sidebar = document.querySelector('.side-bar')
+        sidebar.style.display = 'none'
+    }
+</script>
+</html>

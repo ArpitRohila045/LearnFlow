@@ -1,29 +1,48 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
 from learnflow import settings
 # Create your models here.
 
 
-class User(AbstractUser):
-    """Extend user model with role base authentication model"""
+class CustomUserManager(BaseUserManager):
+    """Custom user manager where email is the unique identifier."""
 
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Email must be provided")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        return self.create_user(email, password, **extra_fields)
+
+
+class User(AbstractUser):
     STUDENT = "STUDENT"
     TEACHER = "TEACHER"
     ADMIN = "ADMIN"
 
     ROLE_CHOICE = [
-        (STUDENT, 'Student'),
-        (TEACHER, 'Teacher'),
-        (ADMIN, 'Admin'),
+        (STUDENT, "Student"),
+        (TEACHER, "Teacher"),
+        (ADMIN, "Admin"),
     ]
 
+    username = None  # REMOVE the default username field
     email = models.EmailField(unique=True)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICE, default='Student')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICE, default=STUDENT)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []  # no username required, only email+password
+    REQUIRED_FIELDS = []  # no username required
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return f"{self.email} ({self.get_role_display()})"
@@ -61,7 +80,7 @@ class Semester(models.Model):
 class Subject(models.Model):
     code = models.CharField(unique=True, primary_key=True, blank=False, max_length=6)
     title = models.TextField(blank=True)
-    description = models.CharField(blank=True, null=True)
+    description = models.FileField(blank=True, null=True)
     syllabus = models.TextField(blank=True, null=True)
     semester = models.ForeignKey(
         Semester,

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import User, StudentProfile, TeacherProfile, Section, Subject, TeachingAssignment, Assignment, Submission
+from . models import User, StudentProfile, TeacherProfile, Section, Subject, TeachingAssignment, Assignment, Submission, Semester, Course, Batch
 
 
 @admin.register(User)
@@ -52,3 +52,15 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_display = ("submission_id", "assignment", "student")
     list_filter = ("assignment", "student")
     search_fields = ("student__user__email", "assignment__title")
+
+@admin.register(Semester)
+class SemesterAdmin(admin.ModelAdmin):
+    model = Semester
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    model = Course
+
+@admin.register(Batch)
+class BatchAdmin(admin.ModelAdmin):
+    model = Batch

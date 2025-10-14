@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block 'style' %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="profile-container">
+        <h1>Student Profile</h1>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button>submit</button>
+        </form>
+    </div>
+{% endblock%}
