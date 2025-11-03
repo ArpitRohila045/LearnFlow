@@ -72,7 +72,6 @@ class Batch(models.Model):
 
 class Semester(models.Model):
     semester = models.PositiveSmallIntegerField(choices=[(i, f"Semester {i}") for i in range(1,9)])
-    
     def __str__(self):
         return self.get_semester_display()
     
@@ -96,7 +95,7 @@ class Subject(models.Model):
 
 
     def __str__(self):
-        return f"{self.subject_code} - ({self.description})"
+        return f"{self.code} - ({self.description})"
     
 
 class Section(models.Model):
@@ -143,8 +142,9 @@ class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'role': 'STUDENT'}, related_name='student_profile')
     roll_no = models.CharField(max_length=50, unique=True)
     section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True, related_name='students')
-    date_of_birth = models.DateField(null=True, blank=True)
-    enrollment_date = models.DateField(default=timezone.now)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE, null=True, blank=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
+    batch = models.ForeignKey(Batch, on_delete=models.CASCADE, null=True, blank=True)
     
     class Meta: 
         unique_together = ['section', 'roll_no']
@@ -157,15 +157,15 @@ class TeacherProfile(models.Model):
     """Extended profile for teachers"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, limit_choices_to={'role': 'TEACHER'}, related_name='teacher_profile')
     department = models.CharField(max_length=100)
-    designation = models.CharField(max_length=100)
-    qualification = models.CharField(max_length=200, blank=True)
-    description = models.TextField()
+    designation = models.CharField(max_length=100, blank=True, null=True)
+    qualification = models.CharField(max_length=200, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     
     class Meta:
         db_table = 'teacher_profiles'
     
     def __str__(self):
-        return f"{self.employee_id} - {self.user.get_full_name()}"
+        return f"{self.user.email} - {self.user.get_full_name()}"
 
 
 class TeachingAssignment(models.Model):
@@ -194,6 +194,19 @@ class TeachingAssignment(models.Model):
     batch = models.ForeignKey(
         Batch,
         on_delete=models.CASCADE
+    )
+
+    semester = models.ForeignKey(
+        Semester,
+        on_delete=models.CASCADE,
+        related_name="subject_semester",
+        default=5,
+    )
+
+    course = models.ForeignKey(
+        Course,
+        on_delete = models.CASCADE,
+        null=True,
     )
 
     class Meta:

@@ -7,5 +7,7 @@ print("urlpatterns in : ", Path(__file__).resolve().parent.parent)
 urlpatterns = [
     path('', views.homeview, name='homeview'),
     path('signup/', views.signup_view, name='signup'),
-    path('signup/profile/', views.profile_view, name='signup_profile'),
+    path('login/', views.login_view, name='login'),
+    path('signup/profile/', views.profile_view, name='profile'),
+    path('dashboard/', views.dashboard_view, name='student_dashboard'),
 ]

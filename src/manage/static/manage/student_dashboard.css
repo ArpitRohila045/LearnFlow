@@ -1,0 +1,65 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: white;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-container {
+    margin: 2rem auto;
+    display: flex;
+}
+
+.dashboard-container-left {
+    width: 40%;
+}
+
+.dashboard-container-right {
+    width: 60%;
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    backdrop-filter: blur(10px);
+    margin-bottom: 2rem;
+}
+
+.profile-left img {
+    width: 120px;
+    border-radius: 50%;
+    border: 3px solid #ffcd3c;
+}
+
+.profile-right {
+    margin-left: 2rem;
+}
+
+.profile-right h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+}
+
+.profile-right p {
+    margin-top: 8px 0;
+}
+
+.section-card{
+    margin-left: 20px ;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .profile-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    .profile-right {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+}

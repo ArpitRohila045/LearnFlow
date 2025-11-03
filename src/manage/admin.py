@@ -31,7 +31,7 @@ class SectionAdmin(admin.ModelAdmin):
 @admin.register(Subject)
 class SubjectAdmin(admin.ModelAdmin):
     list_display = ("code", "description")
-    search_fields = ("subject_code",)
+    search_fields = ("code",)
 
 @admin.register(TeachingAssignment)
 class SectionSubjectTeacherAdmin(admin.ModelAdmin):

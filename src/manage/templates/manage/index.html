@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    {% load static %}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'manage/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Empower Your Learning with <span>LearnFlow</span></h1>
+            <p>Where students and teachers connect, collaborate, and grow together.</p>
+            <div class="hero-buttons">
+                <a href="{% url 'signup' %}" class="btn primary">Get Started</a>
+                <a href="{% url 'login' %}" class="btn secondary">Sign In</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="{% static 'images/learning_hero.svg' %}" alt="Learning Illustration">
+        </div>
+    </section>
+
+    <!-- FEATURE SECTION -->
+    <section class="features">
+        <h2>Why Choose <span>LearnFlow?</span></h2>
+        <p class="sub-text">Designed to make learning more interactive, rewarding, and community-driven.</p>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <img src="{% static 'images/collaboration.svg' %}" alt="Collaboration">
+                <h3>Collaborative Learning</h3>
+                <p>Work with peers, share knowledge, and build skills together — just like a real classroom.</p>
+            </div>
+            <div class="feature-card">
+                <img src="{% static 'images/leaderboard.svg' %}" alt="Leaderboard">
+                <h3>Gamified Experience</h3>
+                <p>Earn points, climb leaderboards, and stay motivated with recognition for your contributions.</p>
+            </div>
+            <div class="feature-card">
+                <img src="{% static 'images/resources.svg' %}" alt="Smart Resources">
+                <h3>Resources</h3>
+                <p>Discover notes, discussions, and Q&A tailored just for you — powered by intelligent recommendations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMUNITY SECTION -->
+    <section class="community">
+        <div class="community-content">
+            <h2>Join a Thriving Learning Community</h2>
+            <p>Meet learners, mentors, and problem-solvers. Share insights, get answers, and never learn alone again.</p>
+            <a href="{% url 'signup' %}" class="btn primary">Join the Community</a>
+        </div>
+        <div class="community-image">
+            <img src="{% static 'images/community_group.svg' %}" alt="Community">
+        </div>
+    </section>
+
+</div>
+{% endblock %}
