@@ -60,9 +60,10 @@ form p{
     margin: -12px;
 }
 
-form ul{
+/* form ul{
     display: none;
-}
+} */
+
 #signup-container {
     flex: 1;
     backdrop-filter: blur(12px);

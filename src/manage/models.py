@@ -34,9 +34,11 @@ class User(AbstractUser):
         (TEACHER, "Teacher"),
         (ADMIN, "Admin"),
     ]
-
-    username = None  # REMOVE the default username field
+    
     email = models.EmailField(unique=True)
+    username = None
+    first_name = models.CharField(max_length=20, blank=True, null=True)
+    last_name = models.CharField(max_length=20, blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICE, default=STUDENT)
 
     USERNAME_FIELD = "email"

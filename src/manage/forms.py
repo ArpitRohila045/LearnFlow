@@ -3,8 +3,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from . models import User, StudentProfile, TeacherProfile
 
 class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True)
-    
     class Meta:
         model = User
         fields = ['email', 'role', 'first_name', 'last_name', 'password1', 'password2']
@@ -18,7 +16,7 @@ class CustomUserCreationForm(UserCreationForm):
 class StudentProfileForm(forms.ModelForm):
     class Meta:
         model = StudentProfile
-        fields = ['roll_no', 'course', 'section', 'semester']
+        fields = ['batch' ,'course', 'section', 'roll_no', 'semester']
     
 
 class TeacherProfileForm(forms.ModelForm):
