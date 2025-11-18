@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" herf="{% static 'manage/teacher_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% for section, subject in zip(sections, subjects) %}
+    <p><strong>{{ section }}</strong>  <strong>{{ subject }}</strong></p>
+{% endblock %}

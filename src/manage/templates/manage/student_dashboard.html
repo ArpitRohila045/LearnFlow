@@ -20,25 +20,20 @@
                 <p><strong>Section: </strong>{{ student.section.name }}</p>
                 <p><strong>Roll No.: </strong>{{ student.roll_no }}</p>
                 <p><strong>Semester: </strong>{{ student.semester }}</p>
-
-                {% for subject in subjects %}
-                    <p></p> {{ subject.code }}</p>
-                {% endfor %}
             </div>
         </section>
     </div>
 
     <div class="dashboard-container-right">
-        <section class="section-card">
-            <h2>Enrolled courses</h2>
-            <ul>
-                {% for sec in sections %}
-                <button class="subject-card" onclick=>
-                
-                </button>
-                {% endfor %}
-            </ul>
-        </section>
+        <h2>Enrolled courses</h2>
+        {% for item in subject_list %}
+            <div class="subject-card">
+                <h4>{{ item.subject }}</h4>
+                <p><strong>Faculty:</strong> <a href="{% url 'teacher_profile' item.teacher_id %}">{{ item.teacher }}</a></p>
+            </div>
+        {% empty %}
+            <p>No subjects found.</p>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

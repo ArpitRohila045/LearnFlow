@@ -1,7 +1,12 @@
 from django.shortcuts import redirect, render
 from .forms import CustomUserCreationForm, TeacherProfileForm, StudentProfileForm, LoginForm
 from django.contrib.auth import login, authenticate, logout
-from .models import User, StudentProfile, TeachingAssignment
+from .models import User, StudentProfile, TeachingAssignment, TeacherProfile
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import User, StudentProfile, Subject, Assignment
+
 
 
 
@@ -51,8 +56,22 @@ def signup_view(request):
     return render(request, 'registration/signup.html', {'form' : form})            
 
 
+def dashboardSelector(user):
+    if user.role == User.STUDENT:
+        return 'student_dashboard'
+    elif user.role == User.TEACHER:
+        return 'teacher_dashboard'
+    else:
+        return 'homeview'
+
 
 def profile_view(request):
+    flag = hasattr(request.user, "student_profile") or hasattr(request.user, "teacher_profile")
+    print(flag)
+    # print(request.user.student_profile)
+    if flag:
+        return redirect(dashboardSelector(request.user))
+    
     if request.method == 'POST':
         if request.user.role == User.STUDENT:
             form = StudentProfileForm(request.POST)
@@ -74,32 +93,17 @@ def profile_view(request):
 
 
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .models import User, StudentProfile, Subject, Assignment
-
-
-
 @login_required
 def dashboard_view(request):
     user = request.user
 
     if user.role == User.STUDENT:
-        student = StudentProfile.objects.filter(user=user).first()
-        if not student:
-            return redirect('profile')
-        teachingAssignment = TeachingAssignment.objects.filter(section=student.section, batch=student.batch, course=student.course)
-        
-        context = {
-            'student': student,
-            'section': teachingAssignment.values('section'),
-            'subjects': teachingAssignment.values('subject'),
-            'teacher': teachingAssignment.values('teacher')
-        }
+        context = student_dashboard_view(user)
         return render(request, 'manage/student_dashboard.html', context)
 
     elif user.role == User.TEACHER:
-        return redirect('teacher_dashboard')  # Ensure this URL exists
+        context = teacher_dashboard_view(user)
+        return render(request, 'manage/teacher_dashboard', context)  # Ensure this URL exists
 
     return redirect('home')
 
@@ -111,3 +115,43 @@ def logout_view(request):
         logout(request)
         return redirect('homeview')
     return redirect('homeview')
+
+
+
+@login_required
+def teacherProfile(request, teacher_id):    
+    teacher = get_object_or_404(TeacherProfile, id=teacher_id)
+    return render(request, 'manage/teacher_profile.html', {'teacher' : teacher})
+
+
+
+def teacher_dashboard_view(user):
+    teaching_assignments = TeachingAssignment.objects.filter(teacher = user.teacher_profile)
+    context = {
+        'sections' : teaching_assignments.section.all(),
+        'subjects' : teaching_assignments.subject.all()
+    }
+    return context
+
+
+
+def student_dashboard_view(user):
+    student = StudentProfile.objects.filter(user=user).first()
+    if not student:
+        return redirect('profile')
+    
+    teachingAssignment = TeachingAssignment.objects.filter(section=student.section, batch=student.batch, course=student.course)
+    subject_list = [
+        {
+            'subject': ta.subject.title,
+            'teacher': ta.teacher.user.get_full_name(),
+            'teacher_id' : ta.teacher.id,
+        }   
+        for ta in teachingAssignment 
+    ]
+    context = {
+        'student': student,
+        'subject_list' : subject_list,
+    }
+
+    return context
