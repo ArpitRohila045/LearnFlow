@@ -136,6 +136,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"  # used in production collectstatic
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = 'login/'
-LOGOUT_REDIRECT_URL = '/'
+
+LOGIN_URL = 'login'
+LOGOUT_REDIRECT_URL = ''
 LOGIN_REDIRECT_URL = '/dashboard/'

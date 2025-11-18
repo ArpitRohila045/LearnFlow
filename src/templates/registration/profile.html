@@ -1,16 +1,91 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="profile-container">
 
-{% block 'style' %}
+    {% if request.user.role == "STUDENT" %}
+        <h1>Student Profile</h1>
+    {% else %}
+        <h1>Teacher Profile</h1>
+    {% endif %}
 
+    <form method="post">
+        {% csrf_token %}
+        <h2>Basic Details</h2>
+        {{ form.as_p }}
+
+        {% if request.user.role == "TEACHER" %}
+        <hr>
+        <h2>Assign Sections & Subjects</h2>
+
+        <table border="1" cellpadding="8" style="width:100%; margin-bottom:20px;">
+            {{ formset.management_form }}
+            {% for f in formset %}
+            <tr class="assignment-row">
+                <td>{{ f.course }}</td>
+                <td>{{ f.branch }}</td>
+                <td>{{ f.batch }}</td>
+                <td>{{ f.semester }}</td>
+                <td>{{ f.section }}</td>
+                <td>{{ f.DELETE }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <button type="button" id="add-row-btn">Add More</button>
+        {% endif %}
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
 {% endblock %}
 
-{% block content %}
-    <div class="profile-container">
-        <h1>Student Profile</h1>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button>submit</button>
-        </form>
-    </div>
-{% endblock%}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        document.cookie.split(';').forEach(function(c) {
+            const cookie = c.trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            }
+        });
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+$(document).on("change", "select[name$='course'], select[name$='branch'], select[name$='batch'], select[name$='semester']", function () {
+    let row = $(this).closest("tr");
+
+    let course = row.find("select[name$='course']").val();
+    let branch = row.find("select[name$='branch']").val();
+    let batch = row.find("select[name$='batch']").val();
+    let semester = row.find("select[name$='semester']").val();
+
+    if (course && batch && semester) {
+        $.ajax({
+            url: "{% url 'ajax_get_sections' %}",   // use named URL
+            method: "GET",
+            data: {
+                course: course,
+                branch: branch,
+                batch: batch,
+                semester: semester
+            },
+            headers: {'X-CSRFToken': csrftoken},
+            success: function (response) {
+                let sectionSelect = row.find("select[name$='section']");
+                sectionSelect.empty();
+                sectionSelect.append(`<option value="">Select Section</option>`);
+                response.sections.forEach(sec => {
+                    sectionSelect.append(`<option value="${sec.id}">${sec.name}</option>`);
+                });
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
